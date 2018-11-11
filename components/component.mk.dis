@@ -1,0 +1,12 @@
+#mixhit_libraries:
+m := mixhit_libraries
+COMPONENT_SRCDIRS := mixhit_libraries/driver
+COMPONENT_SRCDIRS := mixhit_libraries/libs
+COMPONENT_ADD_INCLUDEDIRS := mixhit_libraries/driver
+
+
+#cpp_utils:
+c := cpp_utils
+COMPONENT_EXTRA_INCLUDES := $(realpath $c)
+COMPONENT_ADD_INCLUDEDIRS := $c
+COMPONENT_SRCDIRS := $c
