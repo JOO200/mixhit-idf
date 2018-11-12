@@ -1,0 +1,3 @@
+[submodule "components/MixHit-Libraries"]
+	path = components/MixHit-Libraries
+	url = https://github.com/JOO200/MixHit-Libraries
