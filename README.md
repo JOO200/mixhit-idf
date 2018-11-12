@@ -22,7 +22,10 @@ Benutze für das Klonen die Option "--recursive", damit auch die MixHit-Librarie
   - Navigiere per "cd <Ordnername>" in den mixhit-Ordner.
   - Führe make menuconfig aus
   - Passe den COM-PORT für den ESP32 an
-6. Nun solltest du in Eclipse das Projekt bauen können. Du kannst in den Fenster "Build Targets" auch einen Task mit "flash" anlegen, wodurch es möglich ist, direkt aus Eclipse zu flashen.
+6. Öffne die Projekteigenschaften, 
+  - Navigiere zu C/C++ General -> Paths and Symbols -> Tab Includes
+  - Import Settings -> Importiere die c_includes_windows.xml
+7. Nun solltest du in Eclipse das Projekt bauen können. Du kannst in den Fenster "Build Targets" auch einen Task mit "flash" anlegen, wodurch es möglich ist, direkt aus Eclipse zu flashen.
 
 
 Das hier benutzte Framework heißt "esp-idf". Zu finden ist das Framework auf Github.
