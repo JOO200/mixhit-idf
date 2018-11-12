@@ -1,3 +1,6 @@
 [submodule "components/MixHit-Libraries"]
 	path = components/MixHit-Libraries
 	url = https://github.com/JOO200/MixHit-Libraries
+[submodule "spiffs/web"]
+	path = spiffs/web
+	url = https://github.com/DrStealth126/MixHit-Web.git

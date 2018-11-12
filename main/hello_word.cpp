@@ -1,4 +1,7 @@
-#if 0
+#include <stdio.h>
+#include <string.h>
+#include <sys/unistd.h>
+#include <sys/stat.h>
 #include "WiFi.h"
 #include "GPIO.h"
 #include <vfs_fat_internal.h>
@@ -8,15 +11,11 @@
 #include "sdmmc_cmd.h"
 #include "WiFi.h"
 #include "FTPServer.h"
-#include "esp_spiffs.h"
-#endif
-#include <stdio.h>
-#include <string.h>
-#include <sys/unistd.h>
-#include <sys/stat.h>
 #include "esp_err.h"
 #include "esp_log.h"
 #include "esp_spiffs.h"
+#include "HttpServer.h"
+#include <regex.h>
 
 static const char *TAG = "example";
 
@@ -97,17 +96,25 @@ void app_main(void)
 		ESP_LOGI("example", "Partition size: total: %d, used: %d", total, used);
 	}
 
+	FILE * f = fopen("/spiffs/web/html/index.html", "w");
+	if(f == NULL) ESP_LOGE("example", "Failed");
+	else fprintf(f, "<!DOCTYPE html>  <html lang=\"en\">  <head>      <meta charset=\"UTF-8\">      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">      <title>MixHit - ESP32 - Webserver</title>      <link rel='stylesheet' href='../style/style.css'/>  </head>  <body class=\"row\">      <header class=\"col-9 m1-col-12\">          <h1>Herzlich Willkommen zur MixHit-Cocktailmaschine!</h1>          <h1>Hochschule Karlsruhe - Technik und Wirtschaft</h1>      </header>            <main>          <div>              <p>                  Hier können die verfügbaren Cocktails eingeshen und bestellt werden.              </p>              <a href=\"./cocktailliste.html\"><button class=\"btn col-3 m1-col-6 m2-col-11\" type=\"button\">Cocktailliste</button></a>          </div>          <div>              <P>                  Hier können Informtionen über den MixHit und die Bestellliste eingesehen werden.              </P>              <a href=\"./informationen.html\"><button class=\"btn col-3 m1-col-6 m2-col-11\" type=\"button\">Informationen</button></a>          </div>          <div>              <p>                  Hier können Einstellungen angepasst werden. Adminmodus möglich.              </p>              <a href=\"./einstellungen.html\"><button class=\"btn col-3 m1-col-6 m2-col-11\" type=\"button\">Einstellungen</button></a>          </div>      </main>        <footer class=\"col-12 footerstyle\">          <p>Mix-Hit Wintersemester 2018/19</p>      </footer>  </body>");
+
 #endif
-#if 0
 	WiFi wlan = WiFi();
 	wlan.startAP("MyWLAN", "");
+/*
+	FTPServer ftp = FTPServer();
+	//FTPCallbacks cb = FTPFileCallbacks();
+	//ftp.setCallbacks(&cb);
+	ftp.setCredentials("esp32", "esp32");
+	ftp.start();*/
 
+	HttpServer webServer = HttpServer();
+	webServer.setRootPath("/spiffs/web");
 
-	FTPServer server = FTPServer();
-	FTPCallbacks cb = FTPFileCallbacks();
-	server.setCredentials("esp32", "esp32");
-	server.setCallbacks(&cb);
-	server.start();
-#endif
-	while(1);
+	webServer.start(80);
+	while(1) {
+		vTaskDelay(1); // wichtig: WatchDog triggern.
+	}
 }
