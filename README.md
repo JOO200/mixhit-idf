@@ -12,6 +12,9 @@ Das Klonen des Github-Repository wird hier beschrieben: https://help.github.com/
 Eine Einleitung zu Git findet sich hier: http://rogerdudler.github.io/git-guide/index.de.html
 Benutze für das Klonen die Option "--recursive", damit auch die MixHit-Libraries als Submodul geladen werden
 
+Der geeignete Befehl für das Klonen ist: git clone https://github.com/Mechatronikwelt/mixhit-idf.git --recursive
+Der Befehl kann in der mingw32-Konsole ausgeführt werden, wenn man im Ordner ~/esp/ ist.
+
 ## Installation
 1. Befolge diese Anweisungen: https://docs.espressif.com/projects/esp-idf/en/latest/get-started/windows-setup.html
 2. Setze das Esp32-Framework auf: https://docs.espressif.com/projects/esp-idf/en/latest/get-started/index.html#get-started-get-esp-idf
