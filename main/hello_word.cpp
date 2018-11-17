@@ -14,8 +14,10 @@
 #include "esp_err.h"
 #include "esp_log.h"
 #include "esp_spiffs.h"
-#include "HttpServer.h"
+#include "web/MyWebServer.h"
 #include <regex.h>
+
+#include "MFRC522.h"
 
 static const char *TAG = "example";
 
@@ -24,42 +26,7 @@ extern "C" {
 	void app_main();
 }
 
-void app_main(void)
-{
-
-#undef sdmmc
-#ifdef sdmmc
-	sdmmc_host_t host = SDMMC_HOST_DEFAULT();
-
-	sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
-	gpio_set_pull_mode(GPIO_NUM_15, GPIO_PULLUP_ONLY);
-	gpio_set_pull_mode(GPIO_NUM_2, GPIO_PULLUP_ONLY);
-	gpio_set_pull_mode(GPIO_NUM_4, GPIO_PULLUP_ONLY);
-	gpio_set_pull_mode(GPIO_NUM_12, GPIO_PULLUP_ONLY);
-	gpio_set_pull_mode(GPIO_NUM_13, GPIO_PULLUP_ONLY);
-
-	esp_vfs_fat_sdmmc_mount_config_t mount_config = {
-		.format_if_mount_failed = false,
-		.max_files = 5,
-		.allocation_unit_size = 16 * 1024
-	};
-
-	sdmmc_card_t * card;
-	esp_err_t ret = esp_vfs_fat_sdmmc_mount("/sdcard", &host, &slot_config, &mount_config, &card);
-
-	if (ret != ESP_OK) {
-		if (ret == ESP_FAIL) {
-			printf("Failed to mount filesystem.\n");
-		}
-		else {
-			printf("Failed to initialize the card.\n");
-		}
-		// return;
-	}
-	else {
-		sdmmc_card_print_info(stdout, card);
-	}
-#else
+void setupSpiFFS(void) {
 
 	if(esp_spiffs_mounted(NULL)) {
 		ESP_LOGW("example", "SPIFFS Already mounted");
@@ -95,25 +62,19 @@ void app_main(void)
 	} else {
 		ESP_LOGI("example", "Partition size: total: %d, used: %d", total, used);
 	}
+}
 
-	FILE * f = fopen("/spiffs/web/html/index.html", "w");
-	if(f == NULL) ESP_LOGE("example", "Failed");
-	else fprintf(f, "<!DOCTYPE html>  <html lang=\"en\">  <head>      <meta charset=\"UTF-8\">      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">      <title>MixHit - ESP32 - Webserver</title>      <link rel='stylesheet' href='../style/style.css'/>  </head>  <body class=\"row\">      <header class=\"col-9 m1-col-12\">          <h1>Herzlich Willkommen zur MixHit-Cocktailmaschine!</h1>          <h1>Hochschule Karlsruhe - Technik und Wirtschaft</h1>      </header>            <main>          <div>              <p>                  Hier können die verfügbaren Cocktails eingeshen und bestellt werden.              </p>              <a href=\"./cocktailliste.html\"><button class=\"btn col-3 m1-col-6 m2-col-11\" type=\"button\">Cocktailliste</button></a>          </div>          <div>              <P>                  Hier können Informtionen über den MixHit und die Bestellliste eingesehen werden.              </P>              <a href=\"./informationen.html\"><button class=\"btn col-3 m1-col-6 m2-col-11\" type=\"button\">Informationen</button></a>          </div>          <div>              <p>                  Hier können Einstellungen angepasst werden. Adminmodus möglich.              </p>              <a href=\"./einstellungen.html\"><button class=\"btn col-3 m1-col-6 m2-col-11\" type=\"button\">Einstellungen</button></a>          </div>      </main>        <footer class=\"col-12 footerstyle\">          <p>Mix-Hit Wintersemester 2018/19</p>      </footer>  </body>");
+void app_main(void)
+{
+	setupSpiFFS();
+	WiFi * wlan = new WiFi();
+	wlan->startAP("MyWLAN", "");
 
-#endif
-	WiFi wlan = WiFi();
-	wlan.startAP("MyWLAN", "");
-/*
-	FTPServer ftp = FTPServer();
-	//FTPCallbacks cb = FTPFileCallbacks();
-	//ftp.setCallbacks(&cb);
-	ftp.setCredentials("esp32", "esp32");
-	ftp.start();*/
+	MyWebServer * webServer = new MyWebServer();
+	webServer->start();
 
-	HttpServer webServer = HttpServer();
-	webServer.setRootPath("/spiffs/web");
-
-	webServer.start(80);
+//	MFRC522 mfrc = MFRC522();
+//	mfrc.PCD_Init();
 	while(1) {
 		vTaskDelay(1); // wichtig: WatchDog triggern.
 	}
