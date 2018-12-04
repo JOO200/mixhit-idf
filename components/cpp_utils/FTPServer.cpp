@@ -21,18 +21,6 @@
 
 static const char* LOG_TAG = "FTPServer";
 
-static int ftp_chdir(const char *path)
-{
-	FRESULT result = f_chdir(path);
-	return result == FR_OK ? 0 : -1;
-}
-
-static char *ftp_getcwd(char *buf, size_t size)
-{
-	FRESULT result = f_getcwd(buf, size);
-	return result == FR_OK ? buf : NULL;
-}
-
 // trim from start (in place)
 static void ltrim(std::string &s) {
 	s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
@@ -75,6 +63,8 @@ FTPServer::FTPServer() {
 	m_isAuthenticated = false;
 	m_userid = "";
 	m_password = "";
+
+	m_cwd = "/";
 
 	ESP_LOGD(LOG_TAG,"<< FTPServer()");
 } // FTPServer#FTPServer
@@ -121,9 +111,7 @@ void FTPServer::closePassive() {
  * Retrieve the current directory.
  */
 /* STATIC */ std::string FTPServer::getCurrentDirectory() {
-	char maxDirectory[256];
-	std::string currentDirectory = ftp_getcwd(maxDirectory, sizeof(maxDirectory));
-	return currentDirectory;
+	return m_cwd;
 } // FTPServer#getCurrentDirectory
 
 
@@ -195,9 +183,8 @@ void FTPServer::onAuth(std::istringstream& ss) {
  */
 void FTPServer::onCwd(std::istringstream& ss) {
 	std::string path;
-	ss >> path;
-	ESP_LOGD(LOG_TAG, ">> onCwd: path=%s", path.c_str());
-	ftp_chdir(path.c_str());
+	ss >> m_cwd;
+	ESP_LOGD(LOG_TAG, ">> onCwd: path=%s", m_cwd.c_str());
 	sendResponse(FTPServer::RESPONSE_200_COMMAND_OK);
 	ESP_LOGD(LOG_TAG, "<< onCwd");
 } // FTPServer#onCwd

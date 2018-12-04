@@ -18,7 +18,7 @@
 					<folderInfo id="cdt.managedbuild.toolchain.gnu.cygwin.base.1315869505.752853846" name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.base.1332476279" name="Cygwin GCC" superClass="cdt.managedbuild.toolchain.gnu.cygwin.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.Cygwin_PE" id="cdt.managedbuild.target.gnu.platform.cygwin.base.25101769" name="Debug Platform" osList="win32" superClass="cdt.managedbuild.target.gnu.platform.cygwin.base"/>
-							<builder arguments="${IDF_PATH}/tools/windows/eclipse_make.py" command="python" id="cdt.managedbuild.target.gnu.builder.cygwin.base.321871018" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="cdt.managedbuild.target.gnu.builder.cygwin.base"/>
+							<builder arguments="${IDF_PATH}/tools/windows/eclipse_make.py" autoBuildTarget="all" cleanBuildTarget="clean" command="python" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.cygwin.base.321871018" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="cdt.managedbuild.target.gnu.builder.cygwin.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.base.1275760314" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.base">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.both.asm.option.include.paths.1425711447" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/vfs/include&quot;"/>
@@ -54,7 +54,15 @@
 									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/sdmmc/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/spiffs/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/**/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;C:\msys32\home\Johannes\esp\mixhit-libraries&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/MixHit-Libraries/extern&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/MixHit-Libraries/lists&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/MixHit-Libraries/obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/MixHit-Libraries&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/esp-idf/components/json/cJSON}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mixhit/components/MixHit-Libraries/driver}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mixhit/main/config}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mixhit/components/MixHit-Libraries/mfrc522}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/json/cJSON&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1764789218" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -104,7 +112,16 @@
 									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/sdmmc/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/spiffs/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/**/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;C:\msys32\home\Johannes\esp\mixhit-libraries&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/MixHit-Libraries/extern&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/MixHit-Libraries/lists&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/MixHit-Libraries/obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/u8g2/csrc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/MixHit-Libraries&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/esp-idf/components/json/cJSON}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mixhit/components/MixHit-Libraries/driver}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mixhit/main/config}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mixhit/components/MixHit-Libraries/mfrc522}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/json/cJSON&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.preprocessor.def.756248590" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="ESP_PLATFORM=1"/>
@@ -157,8 +174,15 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/cpp_utils&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/sdmmc/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/spiffs/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/**/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;C:\msys32\home\Johannes\esp\mixhit-libraries&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/MixHit-Libraries/extern&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/MixHit-Libraries/lists&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/MixHit-Libraries/obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/components/MixHit-Libraries&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/esp-idf/components/json/cJSON}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mixhit/components/MixHit-Libraries/driver}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mixhit/main/config}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mixhit/components/MixHit-Libraries/mfrc522}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${IDF_PATH}/components/json/cJSON&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1936059133" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="ESP_PLATFORM=1"/>

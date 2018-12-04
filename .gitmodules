@@ -4,3 +4,6 @@
 [submodule "spiffs/web"]
 	path = spiffs/web
 	url = https://github.com/DrStealth126/MixHit-Web.git
+[submodule "components/u8g2"]
+	path = components/u8g2
+	url = https://github.com/olikraus/u8g2.git

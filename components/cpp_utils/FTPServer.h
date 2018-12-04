@@ -99,6 +99,7 @@ private:
 	bool        m_isAuthenticated;  // Have we authenticated?
 	std::string m_lastCommand;    // The last command that was processed.
 
+
 	FTPCallbacks*    m_callbacks;  // The callbacks for processing.
 
 	void closeConnection();
@@ -123,6 +124,9 @@ private:
 	void onXmkd(std::istringstream& ss);
 	void onXrmd(std::istringstream& ss);
 
+	int ftp_chdir(const char *path);
+	char *ftp_getcwd(char *buf, size_t size);
+
 	bool openData();
 
 	void receiveFile(std::string fileName);
@@ -132,7 +136,8 @@ private:
 	std::string listenPassive();
 	int waitForFTPClient();
 	void processCommand();
-
 };
+
+static std::string m_cwd ="/";
 
 #endif /* NETWORKING_FTPSERVER_FTPSERVER_H_ */

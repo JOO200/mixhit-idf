@@ -31,7 +31,7 @@ public:
 	/**
 	 * @brief The default Clock speed.
 	 */
-	static const uint32_t DEFAULT_CLK_SPEED = 100000;
+	static const uint32_t DEFAULT_CLK_SPEED = 20000;
 
 	I2C();
 	void beginTransaction();
