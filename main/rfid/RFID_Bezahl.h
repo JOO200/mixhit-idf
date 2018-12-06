@@ -33,8 +33,8 @@ public:
 	int bezahlRFIDinit();							//init function for the rfid reader
 	static bool fromString(RfidData & data, std::string json);
 	static int bezahlRFIDwrite(RfidData & writeDataChip);	//Dump the data structure on the rfid chip
-private:
 	static int writeData(RfidData & writeDataChip);	//Dump the data structure on the rfid chip
+private:
 	/*RFID object on address 0x28 and Reset on Pin5*/
 };
 

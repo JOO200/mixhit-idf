@@ -24,6 +24,7 @@ const int HttpResponse::HTTP_STATUS_METHOD_NOT_ALLOWED    = 405;
 const int HttpResponse::HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
 const int HttpResponse::HTTP_STATUS_NOT_IMPLEMENTED       = 501;
 const int HttpResponse::HTTP_STATUS_SERVICE_UNAVAILABLE   = 503;
+const int HttpResponse::HTTP_STATUS_PROCESSING			  = 102;
 
 static std::string lineTerminator = "\r\n";
 HttpResponse::HttpResponse(HttpRequest* request) {
@@ -168,6 +169,11 @@ void HttpResponse::sendHeader() {
 	}
 } // sendHeader
 
+void HttpResponse::delay() {
+	std::ostringstream oss;
+	 oss << m_request->getVersion() << " " << HTTP_STATUS_PROCESSING << "" << lineTerminator;
+	 m_request->getSocket().send(oss.str());
+}
 
 /**
  * @brief Set the status code that is to be sent back to the client.

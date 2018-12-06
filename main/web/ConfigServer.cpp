@@ -3,6 +3,7 @@
 #include "cJSON.h"
 #include <stdio.h>
 #include <regex>
+#include <string>
 
 #include "../config/ConfigProvider.h"
 #include "../config/WebConfig.h"
@@ -90,11 +91,15 @@ void ConfigServer::start(HttpServer * server) {
 	ESP_LOGI("ConfigServer", "Saving config:");
 	std::string json = request->getBody();
 	cJSON * root = cJSON_Parse(json.c_str());
+	cJSON * answer = cJSON_CreateObject();
 	if (!cJSON_HasObjectItem(root, "Pfad") || !cJSON_HasObjectItem(root, "Config"))
 	{
 		ESP_LOGE("ConfigServer", "Invalid JSON received.");
 		response->setStatus(HttpResponse::HTTP_STATUS_BAD_REQUEST, "Invalid Json");
+		cJSON_AddStringToObject(answer, "status", "Invalid JSON.");
+		response->sendData(cJSON_Print(answer));
 		response->close();
+		cJSON_Delete(answer);
 		if (root != NULL) cJSON_Delete(root);
 		return;
 	}
@@ -111,10 +116,18 @@ void ConfigServer::start(HttpServer * server) {
 	if (f == NULL) {
 		ESP_LOGE("ConfigServer", "Error writing file.");
 		response->setStatus(HttpResponse::HTTP_STATUS_BAD_REQUEST, "Error writing file.");
+		cJSON_AddStringToObject(answer, "status", "Error writing file.");
+		response->sendData(cJSON_Print(answer));
+		cJSON_Delete(answer);
 		response->close();
 		return;
 	}
 	fprintf(f, configString.c_str());
 	fclose(f);
+	response->setStatus(HttpResponse::HTTP_STATUS_OK, "Ok");
+	cJSON_AddStringToObject(answer, "status", "Config saved. Please restart.");
+	response->sendData(cJSON_Print(answer));
+	cJSON_Delete(answer);
+	response->close();
 	ESP_LOGI("ConfigServer", "Saved config %s", path.c_str());
 }

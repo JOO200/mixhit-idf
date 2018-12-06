@@ -6,6 +6,8 @@
 #include "string.h"
 #include <string>
 #include <map>
+#include "cJSON.h"
+#include "esp_err.h"
 
 MyWebServer::MyWebServer() {
 	mServer = new HttpServer();
@@ -42,17 +44,32 @@ void MyWebServer::makeCocktail(HttpRequest * request, HttpResponse * response) {
 		response->sendData("{\"Answer\": \"2\"}");
 		response->close();
 		return;
-	} else {
-		response->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
 	}
-	response->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "application/json");
-	response->sendData("{\"Answer\": \"1\"}");
-	response->close();
+
 
 	ESP_LOGI("Bestellung", "Received!");
 
+	uint8_t cntr = 10, status;
+	while ((status = RFID_Bezahl::writeData(cocktail)) != WRITE_SUCCESSFUL && --cntr > 0) {
+		//response->delay();
+		vTaskDelay(100);
+	}
+	cJSON * data = cJSON_CreateObject();
+	// cJSON_AddNumberToObject(data, "cocktailNumber", cocktail.Bestellnummer);
+	if(status == ESP_OK) {
+		cJSON_AddStringToObject(data, "status", "Cocktail wurde gespeichert.");
+	} else {
+		cJSON_AddStringToObject(data, "status", "Fehler beim Schreiben.");
+	}
+	std::string payload = cJSON_Print(data);
+	cJSON_Delete(data);
+	ESP_LOGD("WebServer", "Sending payload %s", payload.c_str());
+	response->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
+	response->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "application/json");
+	response->sendData(payload);
+	response->close();
+
 	/*Now try to write the data on the rfid-chip*/
-	int result = RFID_Bezahl::bezahlRFIDwrite(cocktail);
 
 	/* TODO: Statuszurückgabe an den Client:
 	Idee: Die Antwort zu verzögern, bis die Bestellung auf den Chip geschrieben wird

@@ -27,6 +27,7 @@ public:
 	static const int HTTP_STATUS_INTERNAL_SERVER_ERROR;
 	static const int HTTP_STATUS_NOT_IMPLEMENTED;
 	static const int HTTP_STATUS_SERVICE_UNAVAILABLE;
+	static const int HTTP_STATUS_PROCESSING;
 
 	HttpResponse(HttpRequest* httpRequest);
 	virtual ~HttpResponse();
@@ -39,7 +40,7 @@ public:
 	void                               sendData(uint8_t* pData, size_t size);           // Send data to the client.
 	void                               setStatus(int status, std::string message);      // Set the response status.
 	void 							   sendFile(std::string fileName, size_t bufSize = 4 * 1024);	// Send file contents if exists.
-
+	void							   delay(); // Send PROCESSING STATUS
 private:
 	bool							   m_headerCommitted;  // Has the header been sent?
 	HttpRequest*					   m_request;		  // The request associated with this response.
@@ -48,6 +49,7 @@ private:
 	std::string						m_statusMessage;	// The status message to be sent with the response.
 
 	void sendHeader();									 // Send the header to the client.
+
 
 };
 
