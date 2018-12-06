@@ -84,9 +84,6 @@ void rfc(void)
 
 	uint8_t version = bezahl.getRFID()->PCD_ReadRegister(0x37);
 	ESP_LOGI("MFRC522", "Version %d", version);
-
-	version = bezahl.getRFID()->PCD_ReadRegister(0x06);
-	ESP_LOGI("MFRC522", "Error %d", version);
 }
 
 void app_main(void)
