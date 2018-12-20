@@ -28,7 +28,19 @@ Der Befehl kann in der mingw32-Konsole ausgeführt werden, wenn man im Ordner ~/
 6. Öffne die Projekteigenschaften, 
   - Navigiere zu C/C++ General -> Paths and Symbols -> Tab Includes
   - Import Settings -> Importiere die c_includes_windows.xml
+
 7. Nun solltest du in Eclipse das Projekt bauen können. Du kannst in den Fenster "Build Targets" auch einen Task mit "flash" anlegen, wodurch es möglich ist, direkt aus Eclipse zu flashen.
 
 
 Das hier benutzte Framework heißt "esp-idf". Zu finden ist das Framework auf Github.
+
+## Fehler:
+- "Eclipse kann die includes nicht auflösen!": Es kann sein, dass nicht alle Ordner in der c_includes_windows.xml enthalten sind, die Header-Dateien enthalten:
+  - Wiederhole Schritt 6 aus "Installation"
+  - Überprüfe, ob das Problem gelöst wurde. Wenn ja, ist hier zu Ende.
+  - Füge einen neuen Eintrag mit "Add" hinzu:
+    - Der Pfad sollte relativ sein. Wenn die Zieldatei im Projekt liegt, wähle "Workspace" aus und navigiere zu dem Ordner. Ansonsten kopiere einen bestehenden Pfad und füge diesen hinzu.
+    - Wichtig: Aktiviere die Optionen "Add to all configurations" und "Add to all languages"
+    - Klicke auf Ok
+  - Klicke auf "Apply".
+  - Speichere die Einstellungen mit "Export Settings". Lade deine Datei in das Github-Repository hoch, damit auch andere was davon haben.
