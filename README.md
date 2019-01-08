@@ -44,3 +44,4 @@ Das hier benutzte Framework heißt "esp-idf". Zu finden ist das Framework auf Gi
     - Klicke auf Ok
   - Klicke auf "Apply".
   - Speichere die Einstellungen mit "Export Settings". Lade deine Datei in das Github-Repository hoch, damit auch andere was davon haben.
+- Fehlermeldung bei Git-Commit "Detached head": https://stackoverflow.com/a/20479669
