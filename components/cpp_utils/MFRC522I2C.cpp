@@ -1,12 +1,13 @@
 /*
+* MFRC522_I2C.cpp - Abgeändert auf I2C.
 * MFRC522.cpp - Library to use ARDUINO RFID MODULE KIT 13.56 MHZ WITH TAGS I2C BY AROZCAN
 * MFRC522.cpp - Based on ARDUINO RFID MODULE KIT 13.56 MHZ WITH TAGS SPI Library BY COOQROBOT.
 * NOTE: Please also check the comments in MFRC522.h - they provide useful hints and background information.
 * Released into the public domain.
 */
 
+#include <MFRC522I2C.h>
 #include "esp_log.h"
-#include "MFRC522.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -21,7 +22,7 @@
  * Constructor.
  * Prepares the output pins.
  */
-MFRC522::MFRC522(	uint8_t chipAddress,
+MFRC522_I2C::MFRC522_I2C(	uint8_t chipAddress,
 					uint8_t resetPowerDownPin	///< Arduino pin connected to MFRC522's reset and power down input (Pin 6, NRSTPD, active low)
 				) {
 	_chipAddress = chipAddress;
@@ -29,7 +30,7 @@ MFRC522::MFRC522(	uint8_t chipAddress,
 } // End constructor
 
 
-void MFRC522::init() {
+void MFRC522_I2C::init() {
 
 	i2c_config_t conf;
 	conf.mode             = I2C_MODE_MASTER;
@@ -57,7 +58,7 @@ void MFRC522::init() {
  * Writes a uint8_t to the specified register in the MFRC522 chip.
  * The interface is described in the datasheet section 8.1.2.
  */
-void MFRC522::PCD_WriteRegister(	uint8_t reg,		///< The register to write to. One of the PCD_Register enums.
+void MFRC522_I2C::PCD_WriteRegister(	uint8_t reg,		///< The register to write to. One of the PCD_Register enums.
 									uint8_t value		///< The value to write.
 								) {
 write_single_reg:
@@ -91,7 +92,7 @@ write_single_reg:
  * Writes a number of uint8_ts to the specified register in the MFRC522 chip.
  * The interface is described in the datasheet section 8.1.2.
  */
-void MFRC522::PCD_WriteRegister(	uint8_t reg,		///< The register to write to. One of the PCD_Register enums.
+void MFRC522_I2C::PCD_WriteRegister(	uint8_t reg,		///< The register to write to. One of the PCD_Register enums.
 									uint8_t count,		///< The number of uint8_ts to write to the register
 									uint8_t *values	///< The values to write. Byte array.
 								) {
@@ -127,7 +128,7 @@ void MFRC522::PCD_WriteRegister(	uint8_t reg,		///< The register to write to. On
  * Reads a uint8_t from the specified register in the MFRC522 chip.
  * The interface is described in the datasheet section 8.1.2.
  */
-uint8_t MFRC522::PCD_ReadRegister(	uint8_t reg	///< The register to read from. One of the PCD_Register enums.
+uint8_t MFRC522_I2C::PCD_ReadRegister(	uint8_t reg	///< The register to read from. One of the PCD_Register enums.
 								) {
 	//digitalWrite(_chipSelectPin, LOW);			// Select slave
 	uint8_t value;
@@ -169,7 +170,7 @@ uint8_t MFRC522::PCD_ReadRegister(	uint8_t reg	///< The register to read from. O
  * Reads a number of uint8_ts from the specified register in the MFRC522 chip.
  * The interface is described in the datasheet section 8.1.2.
  */
-void MFRC522::PCD_ReadRegister(	uint8_t reg,		///< The register to read from. One of the PCD_Register enums.
+void MFRC522_I2C::PCD_ReadRegister(	uint8_t reg,		///< The register to read from. One of the PCD_Register enums.
 								uint8_t count,		///< The number of uint8_ts to read
 								uint8_t *values,	///< Byte array to store the values in.
 								uint8_t rxAlign	///< Only bit positions rxAlign..7 in values[0] are updated.
@@ -215,7 +216,7 @@ void MFRC522::PCD_ReadRegister(	uint8_t reg,		///< The register to read from. On
 /**
  * Sets the bits given in mask in register reg.
  */
-void MFRC522::PCD_SetRegisterBitMask(	uint8_t reg,	///< The register to update. One of the PCD_Register enums.
+void MFRC522_I2C::PCD_SetRegisterBitMask(	uint8_t reg,	///< The register to update. One of the PCD_Register enums.
 										uint8_t mask	///< The bits to set.
 									) {
 	uint8_t tmp;
@@ -226,7 +227,7 @@ void MFRC522::PCD_SetRegisterBitMask(	uint8_t reg,	///< The register to update. 
 /**
  * Clears the bits given in mask from register reg.
  */
-void MFRC522::PCD_ClearRegisterBitMask(	uint8_t reg,	///< The register to update. One of the PCD_Register enums.
+void MFRC522_I2C::PCD_ClearRegisterBitMask(	uint8_t reg,	///< The register to update. One of the PCD_Register enums.
 										uint8_t mask	///< The bits to clear.
 									  ) {
 	uint8_t tmp;
@@ -240,7 +241,7 @@ void MFRC522::PCD_ClearRegisterBitMask(	uint8_t reg,	///< The register to update
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::PCD_CalculateCRC(	uint8_t *data,		///< In: Pointer to the data to transfer to the FIFO for CRC calculation.
+uint8_t MFRC522_I2C::PCD_CalculateCRC(	uint8_t *data,		///< In: Pointer to the data to transfer to the FIFO for CRC calculation.
 								uint8_t length,	///< In: The number of uint8_ts to transfer.
 								uint8_t *result	///< Out: Pointer to result buffer. Result is written to result[0..1], low uint8_t first.
 					 ) {
@@ -281,7 +282,7 @@ uint8_t MFRC522::PCD_CalculateCRC(	uint8_t *data,		///< In: Pointer to the data 
 /**
  * Initializes the MFRC522 chip.
  */
-void MFRC522::PCD_Init() {
+void MFRC522_I2C::PCD_Init() {
 	// Set the chipSelectPin as digital output, do not select the slave yet
 
 	// Set the resetPowerDownPin as digital output, do not reset or power down.
@@ -312,7 +313,7 @@ void MFRC522::PCD_Init() {
 /**
  * Performs a soft reset on the MFRC522 chip and waits for it to be ready again.
  */
-void MFRC522::PCD_Reset() {
+void MFRC522_I2C::PCD_Reset() {
 	PCD_WriteRegister(CommandReg, PCD_SoftReset);	// Issue the SoftReset command.
 	// The datasheet does not mention how long the SoftRest command takes to complete.
 	// But the MFRC522 might have been in soft power-down mode (triggered by bit 4 of CommandReg)
@@ -328,7 +329,7 @@ void MFRC522::PCD_Reset() {
  * Turns the antenna on by enabling pins TX1 and TX2.
  * After a reset these pins are disabled.
  */
-void MFRC522::PCD_AntennaOn() {
+void MFRC522_I2C::PCD_AntennaOn() {
 	uint8_t value = PCD_ReadRegister(TxControlReg);
 	if ((value & 0x03) != 0x03) {
 		PCD_WriteRegister(TxControlReg, value | 0x03);
@@ -338,7 +339,7 @@ void MFRC522::PCD_AntennaOn() {
 /**
  * Turns the antenna off by disabling pins TX1 and TX2.
  */
-void MFRC522::PCD_AntennaOff() {
+void MFRC522_I2C::PCD_AntennaOff() {
 	PCD_ClearRegisterBitMask(TxControlReg, 0x03);
 } // End PCD_AntennaOff()
 
@@ -349,7 +350,7 @@ void MFRC522::PCD_AntennaOff() {
  *
  * @return Value of the RxGain, scrubbed to the 3 bits used.
  */
-uint8_t MFRC522::PCD_GetAntennaGain() {
+uint8_t MFRC522_I2C::PCD_GetAntennaGain() {
 	return PCD_ReadRegister(RFCfgReg) & (0x07<<4);
 } // End PCD_GetAntennaGain()
 
@@ -358,7 +359,7 @@ uint8_t MFRC522::PCD_GetAntennaGain() {
  * See 9.3.3.6 / table 98 in http://www.nxp.com/documents/data_sheet/MFRC522.pdf
  * NOTE: Given mask is scrubbed with (0x07<<4)=01110000b as RCFfgReg may use reserved bits.
  */
-void MFRC522::PCD_SetAntennaGain(uint8_t mask) {
+void MFRC522_I2C::PCD_SetAntennaGain(uint8_t mask) {
 	if (PCD_GetAntennaGain() != mask) {						// only bother if there is a change
 		PCD_ClearRegisterBitMask(RFCfgReg, (0x07<<4));		// clear needed to allow 000 pattern
 		PCD_SetRegisterBitMask(RFCfgReg, mask & (0x07<<4));	// only set RxGain[2:0] bits
@@ -371,7 +372,7 @@ void MFRC522::PCD_SetAntennaGain(uint8_t mask) {
  *
  * @return Whether or not the test passed.
  */
-bool MFRC522::PCD_PerformSelfTest() {
+bool MFRC522_I2C::PCD_PerformSelfTest() {
 	// This follows directly the steps outlined in 16.1.1
 	// 1. Perform a soft reset.
 	PCD_Reset();
@@ -453,7 +454,7 @@ bool MFRC522::PCD_PerformSelfTest() {
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::PCD_TransceiveData(	uint8_t *sendData,		///< Pointer to the data to transfer to the FIFO.
+uint8_t MFRC522_I2C::PCD_TransceiveData(	uint8_t *sendData,		///< Pointer to the data to transfer to the FIFO.
 									uint8_t sendLen,		///< Number of uint8_ts to transfer to the FIFO.
 									uint8_t *backData,		///< NULL or pointer to buffer if data should be read back after executing the command.
 									uint8_t *backLen,		///< In: Max number of uint8_ts to write to *backData. Out: The number of uint8_ts returned.
@@ -471,7 +472,7 @@ uint8_t MFRC522::PCD_TransceiveData(	uint8_t *sendData,		///< Pointer to the dat
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::PCD_CommunicateWithPICC(	uint8_t command,		///< The command to execute. One of the PCD_Command enums.
+uint8_t MFRC522_I2C::PCD_CommunicateWithPICC(	uint8_t command,		///< The command to execute. One of the PCD_Command enums.
 										uint8_t waitIRq,		///< The bits in the ComIrqReg register that signals successful completion of the command.
 										uint8_t *sendData,		///< Pointer to the data to transfer to the FIFO.
 										uint8_t sendLen,		///< Number of uint8_ts to transfer to the FIFO.
@@ -573,7 +574,7 @@ uint8_t MFRC522::PCD_CommunicateWithPICC(	uint8_t command,		///< The command to 
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::PICC_RequestA(uint8_t *bufferATQA,	///< The buffer to store the ATQA (Answer to request) in
+uint8_t MFRC522_I2C::PICC_RequestA(uint8_t *bufferATQA,	///< The buffer to store the ATQA (Answer to request) in
 							uint8_t *bufferSize	///< Buffer size, at least two uint8_ts. Also number of uint8_ts returned if STATUS_OK.
 							) {
 	return PICC_REQA_or_WUPA(PICC_CMD_REQA, bufferATQA, bufferSize);
@@ -585,7 +586,7 @@ uint8_t MFRC522::PICC_RequestA(uint8_t *bufferATQA,	///< The buffer to store the
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::PICC_WakeupA(	uint8_t *bufferATQA,	///< The buffer to store the ATQA (Answer to request) in
+uint8_t MFRC522_I2C::PICC_WakeupA(	uint8_t *bufferATQA,	///< The buffer to store the ATQA (Answer to request) in
 							uint8_t *bufferSize	///< Buffer size, at least two uint8_ts. Also number of uint8_ts returned if STATUS_OK.
 							) {
 	return PICC_REQA_or_WUPA(PICC_CMD_WUPA, bufferATQA, bufferSize);
@@ -597,7 +598,7 @@ uint8_t MFRC522::PICC_WakeupA(	uint8_t *bufferATQA,	///< The buffer to store the
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::PICC_REQA_or_WUPA(	uint8_t command, 		///< The command to send - PICC_CMD_REQA or PICC_CMD_WUPA
+uint8_t MFRC522_I2C::PICC_REQA_or_WUPA(	uint8_t command, 		///< The command to send - PICC_CMD_REQA or PICC_CMD_WUPA
 									uint8_t *bufferATQA,	///< The buffer to store the ATQA (Answer to request) in
 									uint8_t *bufferSize	///< Buffer size, at least two uint8_ts. Also number of uint8_ts returned if STATUS_OK.
 							   ) {
@@ -636,7 +637,7 @@ uint8_t MFRC522::PICC_REQA_or_WUPA(	uint8_t command, 		///< The command to send 
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::PICC_Select(	Uid *uid,			///< Pointer to Uid struct. Normally output, but can also be used to supply a known UID.
+uint8_t MFRC522_I2C::PICC_Select(	Uid *uid,			///< Pointer to Uid struct. Normally output, but can also be used to supply a known UID.
 							uint8_t validBits		///< The number of known UID bits supplied in *uid. Normally 0. If set you must also supply uid->size.
 						 ) {
 	bool uidComplete;
@@ -851,7 +852,7 @@ uint8_t MFRC522::PICC_Select(	Uid *uid,			///< Pointer to Uid struct. Normally o
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::PICC_HaltA() {
+uint8_t MFRC522_I2C::PICC_HaltA() {
 	uint8_t result;
 	uint8_t buffer[4];
 
@@ -896,7 +897,7 @@ uint8_t MFRC522::PICC_HaltA() {
  *
  * @return STATUS_OK on success, STATUS_??? otherwise. Probably STATUS_TIMEOUT if you supply the wrong key.
  */
-uint8_t MFRC522::PCD_Authenticate(uint8_t command,		///< PICC_CMD_MF_AUTH_KEY_A or PICC_CMD_MF_AUTH_KEY_B
+uint8_t MFRC522_I2C::PCD_Authenticate(uint8_t command,		///< PICC_CMD_MF_AUTH_KEY_A or PICC_CMD_MF_AUTH_KEY_B
 								uint8_t blockAddr, 	///< The block number. See numbering in the comments in the .h file.
 								MIFARE_Key *key,	///< Pointer to the Crypteo1 key to use (6 uint8_ts)
 								Uid *uid			///< Pointer to Uid struct. The first 4 uint8_ts of the UID is used.
@@ -929,7 +930,7 @@ uint8_t MFRC522::PCD_Authenticate(uint8_t command,		///< PICC_CMD_MF_AUTH_KEY_A 
  * Used to exit the PCD from its authenticated state.
  * Remember to call this function after communicating with an authenticated PICC - otherwise no new communications can start.
  */
-void MFRC522::PCD_StopCrypto1() {
+void MFRC522_I2C::PCD_StopCrypto1() {
 	// Clear MFCrypto1On bit
 	PCD_ClearRegisterBitMask(Status2Reg, 0x08); // Status2Reg[7..0] bits are: TempSensClear I2CForceHS reserved reserved MFCrypto1On ModemState[2:0]
 } // End PCD_StopCrypto1()
@@ -950,7 +951,7 @@ void MFRC522::PCD_StopCrypto1() {
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::MIFARE_Read(	uint8_t blockAddr, 	///< MIFARE Classic: The block (0-0xff) number. MIFARE Ultralight: The first page to return data from.
+uint8_t MFRC522_I2C::MIFARE_Read(	uint8_t blockAddr, 	///< MIFARE Classic: The block (0-0xff) number. MIFARE Ultralight: The first page to return data from.
 							uint8_t *buffer,		///< The buffer to store the data in
 							uint8_t *bufferSize	///< Buffer size, at least 18 uint8_ts. Also number of uint8_ts returned if STATUS_OK.
 						) {
@@ -985,7 +986,7 @@ uint8_t MFRC522::MIFARE_Read(	uint8_t blockAddr, 	///< MIFARE Classic: The block
  * *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::MIFARE_Write(	uint8_t blockAddr, ///< MIFARE Classic: The block (0-0xff) number. MIFARE Ultralight: The page (2-15) to write to.
+uint8_t MFRC522_I2C::MIFARE_Write(	uint8_t blockAddr, ///< MIFARE Classic: The block (0-0xff) number. MIFARE Ultralight: The page (2-15) to write to.
 							uint8_t *buffer,	///< The 16 uint8_ts to write to the PICC
 							uint8_t bufferSize	///< Buffer size, must be at least 16 uint8_ts. Exactly 16 uint8_ts are written.
 						) {
@@ -1020,7 +1021,7 @@ uint8_t MFRC522::MIFARE_Write(	uint8_t blockAddr, ///< MIFARE Classic: The block
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::MIFARE_Ultralight_Write(	uint8_t page, 		///< The page (2-15) to write to.
+uint8_t MFRC522_I2C::MIFARE_Ultralight_Write(	uint8_t page, 		///< The page (2-15) to write to.
 										uint8_t *buffer,	///< The 4 uint8_ts to write to the PICC
 										uint8_t bufferSize	///< Buffer size, must be at least 4 uint8_ts. Exactly 4 uint8_ts are written.
 									) {
@@ -1053,7 +1054,7 @@ uint8_t MFRC522::MIFARE_Ultralight_Write(	uint8_t page, 		///< The page (2-15) t
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::MIFARE_Decrement(	uint8_t blockAddr, ///< The block (0-0xff) number.
+uint8_t MFRC522_I2C::MIFARE_Decrement(	uint8_t blockAddr, ///< The block (0-0xff) number.
 								long delta		///< This number is subtracted from the value of block blockAddr.
 							) {
 	return MIFARE_TwoStepHelper(PICC_CMD_MF_DECREMENT, blockAddr, delta);
@@ -1067,7 +1068,7 @@ uint8_t MFRC522::MIFARE_Decrement(	uint8_t blockAddr, ///< The block (0-0xff) nu
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::MIFARE_Increment(	uint8_t blockAddr, ///< The block (0-0xff) number.
+uint8_t MFRC522_I2C::MIFARE_Increment(	uint8_t blockAddr, ///< The block (0-0xff) number.
 								long delta		///< This number is added to the value of block blockAddr.
 							) {
 	return MIFARE_TwoStepHelper(PICC_CMD_MF_INCREMENT, blockAddr, delta);
@@ -1081,7 +1082,7 @@ uint8_t MFRC522::MIFARE_Increment(	uint8_t blockAddr, ///< The block (0-0xff) nu
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::MIFARE_Restore(	uint8_t blockAddr ///< The block (0-0xff) number.
+uint8_t MFRC522_I2C::MIFARE_Restore(	uint8_t blockAddr ///< The block (0-0xff) number.
 							) {
 	// The datasheet describes Restore as a two step operation, but does not explain what data to transfer in step 2.
 	// Doing only a single step does not work, so I chose to transfer 0L in step two.
@@ -1093,7 +1094,7 @@ uint8_t MFRC522::MIFARE_Restore(	uint8_t blockAddr ///< The block (0-0xff) numbe
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::MIFARE_TwoStepHelper(	uint8_t command,	///< The command to use
+uint8_t MFRC522_I2C::MIFARE_TwoStepHelper(	uint8_t command,	///< The command to use
 									uint8_t blockAddr,	///< The block (0-0xff) number.
 									long data		///< The data to transfer in step 2
 									) {
@@ -1124,7 +1125,7 @@ uint8_t MFRC522::MIFARE_TwoStepHelper(	uint8_t command,	///< The command to use
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::MIFARE_Transfer(	uint8_t blockAddr ///< The block (0-0xff) number.
+uint8_t MFRC522_I2C::MIFARE_Transfer(	uint8_t blockAddr ///< The block (0-0xff) number.
 							) {
 	uint8_t result;
 	uint8_t cmdBuffer[2]; // We only need room for 2 uint8_ts.
@@ -1150,7 +1151,7 @@ uint8_t MFRC522::MIFARE_Transfer(	uint8_t blockAddr ///< The block (0-0xff) numb
  * @param[out]  value       Current value of the Value Block.
  * @return STATUS_OK on success, STATUS_??? otherwise.
   */
-uint8_t MFRC522::MIFARE_GetValue(uint8_t blockAddr, long *value) {
+uint8_t MFRC522_I2C::MIFARE_GetValue(uint8_t blockAddr, long *value) {
 	uint8_t status;
 	uint8_t buffer[18];
 	uint8_t size = sizeof(buffer);
@@ -1175,7 +1176,7 @@ uint8_t MFRC522::MIFARE_GetValue(uint8_t blockAddr, long *value) {
  * @param[in]   value       New value of the Value Block.
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::MIFARE_SetValue(uint8_t blockAddr, long value) {
+uint8_t MFRC522_I2C::MIFARE_SetValue(uint8_t blockAddr, long value) {
 	uint8_t buffer[18];
 
 	// Translate the long into 4 uint8_ts; repeated 2x in value block
@@ -1206,7 +1207,7 @@ uint8_t MFRC522::MIFARE_SetValue(uint8_t blockAddr, long value) {
  *
  * @return STATUS_OK on success, STATUS_??? otherwise.
  */
-uint8_t MFRC522::PCD_MIFARE_Transceive(	uint8_t *sendData,		///< Pointer to the data to transfer to the FIFO. Do NOT include the CRC_A.
+uint8_t MFRC522_I2C::PCD_MIFARE_Transceive(	uint8_t *sendData,		///< Pointer to the data to transfer to the FIFO. Do NOT include the CRC_A.
 										uint8_t sendLen,		///< Number of uint8_ts in sendData.
 										bool acceptTimeout	///< True => A timeout is also success
 									) {
@@ -1274,7 +1275,7 @@ const __FlashStringHelper *MFRC522::GetStatusCodeName(uint8_t code	///< One of t
  *
  * @return PICC_Type
  */
-uint8_t MFRC522::PICC_GetType(uint8_t sak		///< The SAK uint8_t returned from PICC_Select().
+uint8_t MFRC522_I2C::PICC_GetType(uint8_t sak		///< The SAK uint8_t returned from PICC_Select().
 							) {
 	if (sak & 0x04) { // UID not complete
 		return PICC_TYPE_NOT_COMPLETE;
@@ -1331,7 +1332,7 @@ const __FlashStringHelper *MFRC522::PICC_GetTypeName(uint8_t piccType	///< One o
  * On success the PICC is halted after dumping the data.
  * For MIFARE Classic the factory default key of 0xFFFFFFFFFFFF is tried.
  */
-void MFRC522::PICC_DumpToSerial(Uid *uid	///< Pointer to Uid struct returned from a successful PICC_Select().
+void MFRC522_I2C::PICC_DumpToSerial(Uid *uid	///< Pointer to Uid struct returned from a successful PICC_Select().
 								) {
 	MIFARE_Key key;
 
@@ -1388,7 +1389,7 @@ void MFRC522::PICC_DumpToSerial(Uid *uid	///< Pointer to Uid struct returned fro
  * Dumps memory contents of a MIFARE Classic PICC.
  * On success the PICC is halted after dumping the data.
  */
-void MFRC522::PICC_DumpMifareClassicToSerial(	Uid *uid,		///< Pointer to Uid struct returned from a successful PICC_Select().
+void MFRC522_I2C::PICC_DumpMifareClassicToSerial(	Uid *uid,		///< Pointer to Uid struct returned from a successful PICC_Select().
 												uint8_t piccType,	///< One of the PICC_Type enums.
 												MIFARE_Key *key	///< Key A used for all sectors.
 											) {
@@ -1429,7 +1430,7 @@ void MFRC522::PICC_DumpMifareClassicToSerial(	Uid *uid,		///< Pointer to Uid str
  * Uses PCD_Authenticate(), MIFARE_Read() and PCD_StopCrypto1.
  * Always uses PICC_CMD_MF_AUTH_KEY_A because only Key A can always read the sector trailer access bits.
  */
-void MFRC522::PICC_DumpMifareClassicSectorToSerial(Uid *uid,			///< Pointer to Uid struct returned from a successful PICC_Select().
+void MFRC522_I2C::PICC_DumpMifareClassicSectorToSerial(Uid *uid,			///< Pointer to Uid struct returned from a successful PICC_Select().
 													MIFARE_Key *key,	///< Key A for the sector.
 													uint8_t sector			///< The sector to dump, 0..39.
 													) {
@@ -1551,7 +1552,7 @@ void MFRC522::PICC_DumpMifareClassicSectorToSerial(Uid *uid,			///< Pointer to U
 /**
  * Dumps memory contents of a MIFARE Ultralight PICC.
  */
-void MFRC522::PICC_DumpMifareUltralightToSerial() {
+void MFRC522_I2C::PICC_DumpMifareUltralightToSerial() {
 	return;
 	uint8_t status;
 	uint8_t uint8_tCount;
@@ -1580,7 +1581,7 @@ void MFRC522::PICC_DumpMifareUltralightToSerial() {
 /**
  * Calculates the bit pattern needed for the specified access bits. In the [C1 C2 C3] tupples C1 is MSB (=4) and C3 is LSB (=1).
  */
-void MFRC522::MIFARE_SetAccessBits(	uint8_t *accessBitBuffer,	///< Pointer to uint8_t 6, 7 and 8 in the sector trailer. Bytes [0..2] will be set.
+void MFRC522_I2C::MIFARE_SetAccessBits(	uint8_t *accessBitBuffer,	///< Pointer to uint8_t 6, 7 and 8 in the sector trailer. Bytes [0..2] will be set.
 									uint8_t g0,				///< Access bits [C1 C2 C3] for block 0 (for sectors 0-31) or blocks 0-4 (for sectors 32-39)
 									uint8_t g1,				///< Access bits C1 C2 C3] for block 1 (for sectors 0-31) or blocks 5-9 (for sectors 32-39)
 									uint8_t g2,				///< Access bits C1 C2 C3] for block 2 (for sectors 0-31) or blocks 10-14 (for sectors 32-39)
@@ -1607,7 +1608,7 @@ void MFRC522::MIFARE_SetAccessBits(	uint8_t *accessBitBuffer,	///< Pointer to ui
  *
  * Of course with non-bricked devices, you're free to select them before calling this function.
  */
-bool MFRC522::MIFARE_OpenUidBackdoor(bool logErrors) {
+bool MFRC522_I2C::MIFARE_OpenUidBackdoor(bool logErrors) {
 	// Magic sequence:
 	// > 50 00 57 CD (HALT + CRC)
 	// > 40 (7 bits only)
@@ -1677,7 +1678,7 @@ bool MFRC522::MIFARE_OpenUidBackdoor(bool logErrors) {
  * It assumes a default KEY A of 0xFFFFFFFFFFFF.
  * Make sure to have selected the card before this function is called.
  */
-bool MFRC522::MIFARE_SetUid(uint8_t *newUid, uint8_t uidSize, bool logErrors) {
+bool MFRC522_I2C::MIFARE_SetUid(uint8_t *newUid, uint8_t uidSize, bool logErrors) {
 
 	// UID + BCC uint8_t can not be larger than 16 together
 	if (!newUid || !uidSize || uidSize > 15) {
@@ -1689,7 +1690,7 @@ bool MFRC522::MIFARE_SetUid(uint8_t *newUid, uint8_t uidSize, bool logErrors) {
 
 	// Authenticate for reading
 	MIFARE_Key key = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-	uint8_t status = PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, (uint8_t)1, &key, &uid);
+	uint8_t status = PCD_Authenticate(MFRC522_I2C::PICC_CMD_MF_AUTH_KEY_A, (uint8_t)1, &key, &uid);
 	if (status != STATUS_OK) {
 
 		if (status == STATUS_TIMEOUT) {
@@ -1705,7 +1706,7 @@ bool MFRC522::MIFARE_SetUid(uint8_t *newUid, uint8_t uidSize, bool logErrors) {
 				return false;
 			}
 
-			status = PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, (uint8_t)1, &key, &uid);
+			status = PCD_Authenticate(MFRC522_I2C::PICC_CMD_MF_AUTH_KEY_A, (uint8_t)1, &key, &uid);
 			if (status != STATUS_OK) {
 				// We tried, time to give up
 				if (logErrors) {
@@ -1779,7 +1780,7 @@ bool MFRC522::MIFARE_SetUid(uint8_t *newUid, uint8_t uidSize, bool logErrors) {
 /**
  * Resets entire sector 0 to zeroes, so the card can be read again by readers.
  */
-bool MFRC522::MIFARE_UnbrickUidSector(bool logErrors) {
+bool MFRC522_I2C::MIFARE_UnbrickUidSector(bool logErrors) {
 	MIFARE_OpenUidBackdoor(logErrors);
 
 	uint8_t block0_buffer[] = {0x01, 0x02, 0x03, 0x04, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
@@ -1806,7 +1807,7 @@ bool MFRC522::MIFARE_UnbrickUidSector(bool logErrors) {
  *
  * @return bool
  */
-bool MFRC522::PICC_IsNewCardPresent() {
+bool MFRC522_I2C::PICC_IsNewCardPresent() {
 	uint8_t bufferATQA[2];
 	uint8_t bufferSize = sizeof(bufferATQA);
 
@@ -1826,7 +1827,7 @@ bool MFRC522::PICC_IsNewCardPresent() {
  *
  * @return bool
  */
-bool MFRC522::PICC_ReadCardSerial() {
+bool MFRC522_I2C::PICC_ReadCardSerial() {
 	uint8_t result = PICC_Select(&uid);
 	return (result == STATUS_OK);
 } // End PICC_ReadCardSerial()

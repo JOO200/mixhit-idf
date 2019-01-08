@@ -1,4 +1,5 @@
 /**
+* MFRC522_I2C.cpp - Abgeändert auf I2C.
  * MFRC522_I2C.h - Library to use ARDUINO RFID MODULE KIT 13.56 MHZ WITH TAGS I2C BY AROZCAN
  * MFRC522_I2C.h - Based on ARDUINO RFID MODULE KIT 13.56 MHZ WITH TAGS SPI Library BY COOQROBOT.
  * Based on code Dr.Leong   ( WWW.B2CQSHOP.COM )
@@ -133,7 +134,7 @@ const uint8_t FM17522_firmware_reference[]  = {
 	0x56, 0x9A, 0x98, 0x82, 0x26, 0xEA, 0x2A, 0x62
 };
 
-class MFRC522 {
+class MFRC522_I2C {
 public:
 	// MFRC522 registers. Described in chapter 9 of the datasheet.
 	enum PCD_Register {
@@ -320,7 +321,7 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////
 	// Functions for setting up the Arduino
 	/////////////////////////////////////////////////////////////////////////////////////
-	MFRC522(uint8_t chipAddress, uint8_t resetPowerDownPin);
+	MFRC522_I2C(uint8_t chipAddress, uint8_t resetPowerDownPin);
 	void init();
 
 	/////////////////////////////////////////////////////////////////////////////////////

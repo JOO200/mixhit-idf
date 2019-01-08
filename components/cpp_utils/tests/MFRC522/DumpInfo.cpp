@@ -22,11 +22,11 @@
  *
  */
 
-#include <MFRC522.h>
 #include <esp_log.h>
+#include <MFRC522I2C.h>
 static const char LOG_TAG[] = "DumpInfo";
 
-MFRC522 mfrc522;  // Create MFRC522 instance
+MFRC522_I2C mfrc522;  // Create MFRC522 instance
 
 
 void dumpInfo() {
