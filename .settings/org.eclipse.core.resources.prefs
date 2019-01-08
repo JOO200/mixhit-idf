@@ -1,2 +1,2 @@
 eclipse.preferences.version=1
-encoding//components/cpp_utils/MFRC522.cpp=UTF-8
+encoding//components/cpp_utils/MFRC522I2C.cpp=UTF-8

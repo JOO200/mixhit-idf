@@ -1,10 +1,10 @@
 #ifndef RFID_BEZAHL_H_
 #define RFID_BEZAHL_H_
 
+#include <MFRC522I2C.h>
 #include "RFID.h"
 #include "RFID_Errorcodes.h"
 #include "cOrder.h"
-#include "MFRC522.h"
 #include "cReservoir.h"
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels

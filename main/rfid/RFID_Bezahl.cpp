@@ -1,10 +1,10 @@
+#include <MFRC522I2C.h>
 #include "RFID_Bezahl.h"
 #include "RFID_Errorcodes.h"
 #include "esp_log.h"
 #include <string>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "MFRC522.h"
 #include "string.h"
 #include "esp_err.h"
 #include "ReservoirConfig.h"
@@ -70,14 +70,14 @@ int RFID_Bezahl::writeData(RfidData & writeDataChip)
 	}
 	ESP_LOGI("RFID", "Uid found 0x%02x %02x %02x %02x"
 			, rfid1.uid.uidByte[0], rfid1.uid.uidByte[1], rfid1.uid.uidByte[2], rfid1.uid.uidByte[3]);
-	if(rfid1.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, 15, (MFRC522::MIFARE_Key*)&secretKey, &rfid1.uid) != MFRC522::STATUS_OK) {
+	if(rfid1.PCD_Authenticate(MFRC522_I2C::PICC_CMD_MF_AUTH_KEY_A, 15, (MFRC522_I2C::MIFARE_Key*)&secretKey, &rfid1.uid) != MFRC522_I2C::STATUS_OK) {
 		ESP_LOGE("RFID", "Authenticate failed");
 		rfid1.PCD_StopCrypto1(); //Stop communication with Tag
 		return WRITE_ERROR;
 	}
 	ESP_LOGI("RFID", "Authenticate successful");
 	uint8_t drink_status;
-	if (!rfid1.getDrinkStatus(drink_status, (MFRC522::MIFARE_Key*)&secretKey))
+	if (!rfid1.getDrinkStatus(drink_status, (MFRC522_I2C::MIFARE_Key*)&secretKey))
 	{
 		ESP_LOGE("RFID", "Error reading Status bit.");
 		rfid1.PCD_StopCrypto1(); //Stop communication with Tag
@@ -90,13 +90,13 @@ int RFID_Bezahl::writeData(RfidData & writeDataChip)
 	}
 	vTaskDelay(5);
 	ESP_LOGI("RFID", "Attemp to write data.");
-	if(!rfid1.writeData(writeDataChip, (MFRC522::MIFARE_Key*)&stdKey)) {
+	if(!rfid1.writeData(writeDataChip, (MFRC522_I2C::MIFARE_Key*)&stdKey)) {
 		ESP_LOGE("RFID", "Writing process failed.");
 		rfid1.PCD_StopCrypto1(); //Stop communication with Tag
 		return WRITE_ERROR;
 	}
 	ESP_LOGI("RFID", "Set drink status");
-	if(!rfid1.setDrinkStatus(writeDataChip.Status, (MFRC522::MIFARE_Key*)&secretKey)) {
+	if(!rfid1.setDrinkStatus(writeDataChip.Status, (MFRC522_I2C::MIFARE_Key*)&secretKey)) {
 		ESP_LOGE("RFID", "Attempt to set drink status failed.");
 		rfid1.PCD_StopCrypto1(); //Stop communication with Tag
 		return WRITE_ERROR;
@@ -104,7 +104,7 @@ int RFID_Bezahl::writeData(RfidData & writeDataChip)
 
 	ESP_LOGI("RFID", "Verifying Data on chip.");
 	RfidData verify;
-	if(!rfid1.readData(verify, (MFRC522::MIFARE_Key*)&stdKey)) {
+	if(!rfid1.readData(verify, (MFRC522_I2C::MIFARE_Key*)&stdKey)) {
 		ESP_LOGE("RFID", "Verifying Data on chip failed.");
 		rfid1.PCD_StopCrypto1(); //Stop communication with Tag
 		return WRITE_ERROR;
